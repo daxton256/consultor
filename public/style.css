@@ -536,3 +536,75 @@ body.style-skeuo .sidebar-footer { border-top: 1px solid var(--bevel-dark); box-
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ===========================================================================
+   MOBILE LAYOUT — sidebar becomes a slide-in drawer behind a ☰ button
+   =========================================================================== */
+.menu-btn { display: none; }
+.sidebar-backdrop { display: none; }
+
+@media (max-width: 700px) {
+  /* dvh tracks the real visible height when the URL bar / keyboard moves */
+  body, .app, .auth-wrap { height: 100vh; height: 100dvh; }
+
+  .menu-btn { display: inline-flex; flex-shrink: 0; font-size: 19px; }
+
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: min(85vw, 320px);
+    z-index: 60;
+    transform: translateX(-105%);
+    transition: transform .22s ease;
+  }
+  body.sidebar-open .sidebar {
+    transform: translateX(0);
+    box-shadow: 12px 0 40px rgba(0,0,0,.45);
+  }
+  body.sidebar-open .sidebar-backdrop {
+    display: block;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 55;
+  }
+
+  .main { width: 100%; }
+  .main-header { padding: 10px 12px; gap: 6px; }
+  .header-model { display: none; }
+  #header-title { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+  .messages { padding: 16px 12px 8px; }
+  .msg { gap: 8px; margin-bottom: 16px; }
+  .msg-user .bubble-wrap { max-width: 88%; }
+  .empty-state { padding-top: 12vh; }
+
+  /* keep the composer clear of notches / gesture bars */
+  .composer-wrap { padding: 6px 10px calc(10px + env(safe-area-inset-bottom)); }
+  /* 16px inputs stop iOS Safari from zooming in on focus */
+  .composer textarea, .field input, .field textarea, select { font-size: 16px; }
+
+  /* bigger touch targets; no hover on touchscreens, so always show delete */
+  .chat-item { padding: 12px 10px; }
+  .chat-item .del { visibility: visible; }
+  .icon-btn { width: 40px; height: 40px; }
+  .sidebar-footer { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+
+  .auth-wrap { padding: 16px; }
+  .auth-card { width: 100%; max-width: 380px; }
+  .auth-body { padding: 26px 22px 24px; }
+
+  /* settings become a full-screen sheet */
+  .modal {
+    width: 100vw;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0 !important;
+  }
+  .modal-body { padding: 16px 18px calc(16px + env(safe-area-inset-bottom)); }
+  .settings-row { flex-wrap: wrap; }
+
+  /* skeuomorphic: main window goes full-bleed but keeps its glass chrome */
+  body.style-skeuo .app { padding: 0; gap: 0; }
+  body.style-skeuo .main { border-radius: 0; border-left: none; border-right: none; }
+  body.style-skeuo .sidebar { border-radius: 0 9px 9px 0; }
+}
