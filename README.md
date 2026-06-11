@@ -163,3 +163,10 @@ tools/
   make-icons.js            regenerate the PWA icons (zero deps)
 data/                      all user data (gitignored)
 ```
+
+## Credits
+
+Built by **Claude Fable** (Anthropic's Claude, via [Claude Code](https://claude.com/claude-code)) —
+design, code, and testing — in conversation with the project's owner, who steered the
+features, caught the bugs that mattered, and picked the skeuomorphic theme. ✦
+
