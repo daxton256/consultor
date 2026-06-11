@@ -174,8 +174,11 @@ function buildSystemPrompt(settings) {
     }
     if (canConsult) {
       lines.push(
-        `- Expert AI (${name}): [[CONSULT: <a clear, self-contained question>]] — use this for very difficult questions that ` +
-        `need deep expertise, obscure knowledge, or capabilities beyond yours.${canSearch ? ' Do NOT use it for current events or time-sensitive facts — use web search for those.' : ''}`
+        `- Expert AI (${name}): [[CONSULT: <a clear, self-contained request>]] — use this for tasks the expert handles better than you, ` +
+        'not just facts you lack: writing or debugging non-trivial code, complex math, tricky algorithms, detailed technical designs, ' +
+        'and questions needing deep expertise or obscure knowledge. If a task is hard and the expert would likely do a noticeably better job, ' +
+        'consult rather than struggle through alone. The expert cannot see this conversation, so put ALL relevant context ' +
+        `(the code, the error message, the user's requirements) inside the request itself.${canSearch ? ' Do NOT use it for current events or time-sensitive facts — use web search for those.' : ''}`
       );
     }
     lines.push(

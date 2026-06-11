@@ -2,7 +2,7 @@
 // Consultor service worker — makes the app installable and lets the shell
 // load offline. API calls are never cached.
 
-const CACHE = 'consultor-v1';
+const CACHE = 'consultor-v3';
 const SHELL = [
   '/',
   '/style.css',

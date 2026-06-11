@@ -284,7 +284,23 @@ body.theme-light {
 }
 .bubble ul, .bubble ol { margin: 8px 0 10px 22px; }
 .bubble li { margin-bottom: 4px; }
-.bubble h1, .bubble h2, .bubble h3 { margin: 14px 0 8px; font-size: 1.1em; }
+.bubble h1, .bubble h2, .bubble h3, .bubble h4 { margin: 14px 0 8px; font-size: 1.1em; }
+.bubble h4 { font-size: 1em; }
+.bubble table {
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 14px;
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.bubble th, .bubble td {
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  text-align: left;
+}
+.bubble th { background: var(--bg-hover); font-weight: 600; }
+.bubble hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
 .bubble a { color: var(--accent); }
 .bubble blockquote { border-left: 3px solid var(--border); padding-left: 12px; color: var(--text-dim); margin: 8px 0; }
 
