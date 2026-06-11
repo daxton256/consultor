@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consultor</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#212121">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-dark style-flat">
+
+<!-- ======================= ACCESS GATE VIEW ======================= -->
+<div id="gate-view" class="auth-wrap hidden">
+  <div class="auth-card window">
+    <div class="window-titlebar"><span class="window-dot"></span>Consultor</div>
+    <div class="auth-body">
+      <div class="auth-logo">🔑</div>
+      <h1>Access code required</h1>
+      <p class="auth-sub">This server is private. Enter the access code its owner generated for you.</p>
+      <form id="gate-form">
+        <label class="field">
+          <span>Access code</span>
+          <input type="text" id="gate-code" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" spellcheck="false" required>
+        </label>
+        <div class="auth-error hidden" id="gate-error"></div>
+        <button type="submit" class="btn btn-primary btn-block">Continue</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= AUTH VIEW ======================= -->
+<div id="auth-view" class="auth-wrap hidden">
+  <div class="auth-card window">
+    <div class="window-titlebar"><span class="window-dot"></span>Consultor</div>
+    <div class="auth-body">
+      <div class="auth-logo">✦</div>
+      <h1 id="auth-title">Welcome back</h1>
+      <p class="auth-sub" id="auth-sub">Log in to continue chatting</p>
+      <form id="auth-form">
+        <label class="field">
+          <span>Username</span>
+          <input type="text" id="auth-username" autocomplete="username" required>
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input type="password" id="auth-password" autocomplete="current-password" required>
+        </label>
+        <label class="field hidden" id="confirm-field">
+          <span>Confirm password</span>
+          <input type="password" id="auth-password2" autocomplete="new-password">
+        </label>
+        <div class="auth-error hidden" id="auth-error"></div>
+        <button type="submit" class="btn btn-primary btn-block" id="auth-submit">Log in</button>
+      </form>
+      <p class="auth-switch">
+        <span id="auth-switch-text">Don't have an account?</span>
+        <a href="#" id="auth-switch-link">Sign up</a>
+      </p>
+      <p class="auth-switch"><a href="/install.html">📱 Install as an app</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= APP VIEW ======================= -->
+<div id="app-view" class="app hidden">
+  <aside class="sidebar window">
+    <div class="sidebar-top">
+      <button class="btn btn-newchat" id="btn-new-chat">＋&nbsp; New chat</button>
+    </div>
+    <nav class="chat-list" id="chat-list"></nav>
+    <div class="sidebar-footer">
+      <div class="user-pill">
+        <span class="avatar avatar-user" id="user-avatar">?</span>
+        <span class="user-name" id="user-name"></span>
+      </div>
+      <button class="icon-btn" id="btn-settings" title="Settings">⚙</button>
+      <button class="icon-btn" id="btn-logout" title="Log out">⏻</button>
+    </div>
+  </aside>
+
+  <main class="main window">
+    <header class="main-header window-titlebar">
+      <span class="window-dot"></span>
+      <span id="header-title">Consultor</span>
+      <span class="header-model" id="header-model"></span>
+    </header>
+
+    <div class="messages-scroll" id="messages-scroll">
+      <div class="messages" id="messages">
+        <div class="empty-state" id="empty-state">
+          <div class="empty-logo">✦</div>
+          <h2>How can I help you today?</h2>
+          <p class="empty-sub">Powered by your local model — with an expert AI on speed dial.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="composer-wrap">
+      <form class="composer" id="composer">
+        <textarea id="composer-input" rows="1" placeholder="Message your assistant…"></textarea>
+        <button type="submit" class="btn btn-send" id="btn-send" title="Send">➤</button>
+      </form>
+      <p class="composer-hint">Local model can make mistakes. It will consult your configured expert AI when unsure.</p>
+    </div>
+  </main>
+</div>
+
+<!-- ======================= SETTINGS MODAL ======================= -->
+<div id="settings-overlay" class="overlay hidden">
+  <div class="modal window">
+    <div class="window-titlebar modal-titlebar">
+      <span class="window-dot"></span>Settings
+      <button class="icon-btn modal-close" id="settings-close" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <section class="settings-section">
+        <h3>Appearance</h3>
+        <div class="settings-row">
+          <label>Interface style</label>
+          <div class="segmented" id="seg-style">
+            <button type="button" data-value="flat">Modern flat</button>
+            <button type="button" data-value="skeuo">Skeuomorphic</button>
+          </div>
+        </div>
+        <div class="settings-row">
+          <label>Theme</label>
+          <div class="segmented" id="seg-theme">
+            <button type="button" data-value="light">☀ Light</button>
+            <button type="button" data-value="dark">☾ Dark</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <h3>Local model</h3>
+        <p class="section-sub">
+          Set server-wide in <code>config.json</code> next to <code>server.js</code> (restart the server after editing).<br>
+          Currently: <strong id="cfg-model"></strong> &nbsp;at&nbsp; <span id="cfg-url"></span>
+        </p>
+      </section>
+
+      <section class="settings-section">
+        <h3>Personality</h3>
+        <label class="field">
+          <span>Custom instructions <small>(how the assistant should act)</small></span>
+          <textarea id="set-persona" rows="4" placeholder="e.g. You are a friendly coding tutor. Keep answers short and always include an example."></textarea>
+        </label>
+      </section>
+
+      <section class="settings-section">
+        <h3>Web search</h3>
+        <p class="section-sub">For current events and time-sensitive questions, the assistant searches the web instead of asking the expert AI.</p>
+        <div class="settings-row">
+          <label>Provider</label>
+          <select id="set-search-provider">
+            <option value="duckduckgo">DuckDuckGo (free, no key)</option>
+            <option value="ollama">Ollama web search (API key)</option>
+            <option value="none">Disabled</option>
+          </select>
+        </div>
+        <div id="search-key-field" class="hidden">
+          <label class="field">
+            <span>Ollama API key <small id="searchkey-status"></small></span>
+            <input type="password" id="set-search-key" placeholder="from ollama.com → Settings → API keys" autocomplete="off">
+          </label>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <h3>Expert consultant AI</h3>
+        <p class="section-sub">When the local model doesn't know something, it will quietly ask this AI for help and use its answer.</p>
+        <div class="settings-row">
+          <label>Provider</label>
+          <select id="set-consultant-provider">
+            <option value="none">None (disabled)</option>
+            <option value="anthropic">Anthropic (Claude)</option>
+            <option value="openai">OpenAI (ChatGPT)</option>
+            <option value="custom">Custom (OpenAI-compatible)</option>
+          </select>
+        </div>
+        <div id="consultant-fields" class="hidden">
+          <label class="field">
+            <span>API key <small id="apikey-status"></small></span>
+            <input type="password" id="set-consultant-key" placeholder="sk-…" autocomplete="off">
+          </label>
+          <label class="field">
+            <span>Model <small>(blank = sensible default)</small></span>
+            <input type="text" id="set-consultant-model" placeholder="e.g. claude-sonnet-4-6 or gpt-4o">
+          </label>
+          <label class="field" id="consultant-url-field">
+            <span>Base URL <small>(blank = official API)</small></span>
+            <input type="text" id="set-consultant-url" placeholder="https://api.anthropic.com">
+          </label>
+        </div>
+      </section>
+
+      <div class="modal-actions">
+        <span id="settings-saved" class="saved-note hidden">Saved ✓</span>
+        <button class="btn btn-primary" id="settings-save">Save settings</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

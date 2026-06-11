@@ -1,0 +1,13 @@
+{
+  "name": "consultor",
+  "version": "1.0.0",
+  "description": "Self-hosted ChatGPT-style chat UI for a local LLM, with a consultant-AI escalation system",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "access-code": "node tools/access-code.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

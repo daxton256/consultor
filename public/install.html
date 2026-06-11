@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Install Consultor</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#212121">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+<style>
+  .install-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--bg);
+  }
+  .install-card { width: 420px; max-width: 100%; text-align: center; }
+  .install-body { padding: 36px 32px 30px; }
+  .install-icon {
+    width: 96px; height: 96px;
+    border-radius: 22px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    margin-bottom: 18px;
+  }
+  .install-body h1 { font-size: 26px; font-weight: 700; }
+  .install-tag { color: var(--text-dim); margin: 8px 0 24px; font-size: 14.5px; line-height: 1.5; }
+  #btn-install { font-size: 16px; padding: 13px 0; }
+  .install-note {
+    margin-top: 18px;
+    text-align: left;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text-dim);
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .install-note strong { color: var(--text); }
+  .install-note ol { margin: 6px 0 0 20px; }
+  .install-open { margin-top: 20px; font-size: 14px; }
+  .install-open a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .ok { color: #19b27b; font-weight: 600; }
+  .warn { border-color: rgba(220,160,60,.5); }
+</style>
+</head>
+<body class="theme-dark style-flat">
+<div class="install-wrap">
+  <div class="install-card window">
+    <div class="install-body">
+      <img class="install-icon" src="icons/icon-192.png" alt="Consultor icon">
+      <h1>Consultor</h1>
+      <p class="install-tag">Your local AI chat — with web search and an expert AI on speed dial. Install it on your phone for a full-screen, home-screen app experience.</p>
+
+      <button class="btn btn-primary btn-block" id="btn-install" disabled>Install app</button>
+      <div id="install-status" class="install-note hidden"></div>
+
+      <p class="install-open"><a href="/">Open Consultor in the browser →</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const btn = document.getElementById('btn-install');
+  const status = document.getElementById('install-status');
+  let deferredPrompt = null;
+
+  function show(html, cls) {
+    status.innerHTML = html;
+    status.classList.remove('hidden');
+    if (cls) status.classList.add(cls);
+  }
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+
+  // already running as an installed app?
+  if (matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+    btn.textContent = 'Installed ✓';
+    show('<span class="ok">You\'re already using the installed app.</span>');
+    return;
+  }
+
+  // installation requires a secure context (HTTPS, or localhost)
+  if (!window.isSecureContext) {
+    btn.disabled = true;
+    show(
+      '<strong>⚠ HTTPS needed to install.</strong> Android only allows app installation from a secure address, ' +
+      'and you\'re visiting over plain HTTP (' + location.host + ').<br><br>' +
+      'Easy fixes:' +
+      '<ol>' +
+      '<li><strong>Tailscale</strong> (free): run <code>tailscale serve 3000</code> on the PC, then open the <code>https://…ts.net</code> address on your phone.</li>' +
+      '<li><strong>Cloudflare Tunnel</strong>: <code>cloudflared tunnel --url http://localhost:3000</code></li>' +
+      '<li>Or in Chrome on the phone, open <code>chrome://flags/#unsafely-treat-insecure-origin-as-secure</code>, add <code>http://' + location.host + '</code>, and relaunch.</li>' +
+      '</ol>',
+      'warn'
+    );
+    return;
+  }
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    btn.disabled = false;
+  });
+
+  btn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    if (outcome === 'accepted') {
+      btn.textContent = 'Installed ✓';
+      btn.disabled = true;
+      show('<span class="ok">Installed! Find Consultor on your home screen.</span>');
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    btn.textContent = 'Installed ✓';
+    btn.disabled = true;
+    show('<span class="ok">Installed! Find Consultor on your home screen.</span>');
+  });
+
+  // if Chrome never offers the prompt, show manual instructions after a moment
+  setTimeout(() => {
+    if (deferredPrompt || !btn.disabled || status.textContent) return;
+    const ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    show(
+      ios
+        ? '<strong>On iPhone/iPad:</strong> tap the Share button in Safari, then <strong>Add to Home Screen</strong>.'
+        : '<strong>Manual install:</strong> open the browser menu (⋮) and choose <strong>Add to Home screen</strong> / <strong>Install app</strong>.'
+    );
+  }, 2500);
+})();
+</script>
+</body>
+</html>

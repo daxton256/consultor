@@ -1,0 +1,17 @@
+# dependencies
+node_modules/
+
+# user data — accounts, password hashes, sessions, chats, API keys, access codes.
+# NEVER commit this.
+data/
+
+# per-deployment config (the server creates it with defaults on first run)
+config.json
+
+# local tooling
+.claude/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.log
