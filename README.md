@@ -27,7 +27,7 @@ it learned.
 ## Quick start
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/daxton256/consultor.git
 cd consultor
 npm install
 
